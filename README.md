@@ -6,11 +6,31 @@ Some reference:
 - Manual book for turtlebot2 kobuki: https://learn.turtlebot.com/2015/02/01/1/  [But most of them are redundant]
 - Official repo: [https://github.com/yujinrobot/kobuki.git](https://github.com/yujinrobot/kobuki.git)
 
+Why we need this? 
+
+1. kobuki is produced at 2015 which is really far away, this repo will only provide the thing you can run the kobuki robot [maunal control using keyboard or remote control].
+2. This is for us to collected our own dataset **mainly indoor**, or tested our algorith in a **real robot**. 
+
 Test System: Ubuntu 20.04 noetic
 
 Test Day: 2023/03/08 20:21
 
 Author: Kin ZHANG (https://kin-zhang.github.io/)
+
+---
+
+Sensor setup:
+
+- Velodyne VLP-16
+- Livox Avia
+
+Will add more... like camera (rgb/depth).
+
+
+
+Picture of it:
+
+TODO
 
 ## Dependencies & Build
 
