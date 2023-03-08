@@ -1,18 +1,23 @@
-Manual book for turtlebot2 kobuki: https://learn.turtlebot.com/2015/02/01/1/ 
+KTH-RPL kobuki robot
+---
 
-Test System: noetic Ubuntu 20.04
+Some reference:
 
-Test Day: 2023/03/07
+- Manual book for turtlebot2 kobuki: https://learn.turtlebot.com/2015/02/01/1/  [But most of them are redundant]
+- Official repo: [https://github.com/yujinrobot/kobuki.git](https://github.com/yujinrobot/kobuki.git)
 
-# New
+Test System: Ubuntu 20.04 noetic
 
-From here: https://github.com/yujinrobot/kobuki/issues/427
+Test Day: 2023/03/08 20:21
+
+Author: Kin ZHANG (https://kin-zhang.github.io/)
 
 ## Dependencies & Build
 
-```bash
-sudo apt-get install liborocos-kdl-dev vros-noetic-ecl-* libusb-dev libftdi-dev -y
+reference: https://github.com/yujinrobot/kobuki/issues/427
 
+```bash
+sudo apt update && apt-get install liborocos-kdl-dev ros-noetic-ecl-* libusb-dev libftdi-dev -y
 
 mkdir -p ~/kobuki_ws/src
 cd ~/kobuki_ws/src
@@ -36,38 +41,21 @@ catkin_make
 
 
 
+1. `kobuki.cpp` for the serial read thing.
+2. `subscriber_callbacks.cpp` topic will send to kobuki
 
 
+## Run
 
-
-# Old one (deprecated xx)
-
-## Dependencies
-
-- ROS-noetic
+First you need change the config file, `base.yaml`, the most import thing is:
 
 ```bash
-sudo apt install ros-noetic-joy ros-noetic-ecl-core ros-noetic-ecl-console ros-noetic-ecl-mobile-robot
-sudo apt-get install python-catkin-tools
-pip3 install pyserial
+device_port: /dev/ttyUSB0
 ```
 
+# Issues 
 
-
-## catkin build
-
-I remove some pkg for easy run the turtlebot is enough:
-
-```bash
-rm -rf yujin_ocs/yocs_waypoints_navi
-rm -rf yujin_ocs/yocs_navigator
-rm -rf kobuki_core/kobuki_ftdi/
-rm -rf linux_peripheral_interfaces/libsensors_monitor linux_peripheral_interfaces/linux_peripheral_interfaces
-```
-
-
-
-## issue
+Some problem you may met, record here:
 
 1. Cannot open /dev/ttyUSB0: Permission denied #26 https://github.com/esp8266/source-code-examples/issues/26
 
