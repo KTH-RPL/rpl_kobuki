@@ -37,7 +37,7 @@ TODO (since Patric and I are rebuilding this power setting)
 reference: https://github.com/yujinrobot/kobuki/issues/427
 
 ```bash
-sudo apt update && apt-get install liborocos-kdl-dev ros-noetic-ecl-* libusb-dev libftdi-dev -y
+sudo apt update && sudo apt-get install liborocos-kdl-dev libusb-dev libftdi-dev ros-noetic-joy ros-noetic-ecl-core ros-noetic-ecl-console ros-noetic-ecl-mobile-robot -y
 
 mkdir -p ~/kobuki_ws/src
 cd ~/kobuki_ws/src
