@@ -34,29 +34,14 @@ TODO (since Patric and I are rebuilding this power setting)
 
 ## Dependencies & Build
 
-reference: https://github.com/yujinrobot/kobuki/issues/427
+reference: https://github.com/yujinrobot/kobuki/issues/427, https://github.com/yujinrobot/kobuki/issues/382
 
 ```bash
 sudo apt update && sudo apt-get install liborocos-kdl-dev libusb-dev libftdi-dev ros-noetic-joy ros-noetic-ecl-core ros-noetic-ecl-console ros-noetic-ecl-mobile-robot -y
+```
 
-mkdir -p ~/kobuki_ws/src
-cd ~/kobuki_ws/src
-git clone https://github.com/yujinrobot/kobuki.git
-git clone https://github.com/yujinrobot/yujin_ocs.git
-git clone https://github.com/yujinrobot/kobuki_msgs.git
-git clone https://github.com/yujinrobot/kobuki_core.git
-
-cd yujin_ocs
-mkdir save 
-mv yocs_cmd_vel_mux save
-mv yocs_controllers save
-mv yocs_velocity_smoother save
-rm -rf yocs*
-cd save 
-mv * ..
-cd .. && rmdir save
-cd ~/kobuki_ws/
-catkin_make
+```bash
+git clone TODO_public_link # this repo
 ```
 
 
