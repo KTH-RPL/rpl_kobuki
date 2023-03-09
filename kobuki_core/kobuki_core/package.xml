@@ -1,26 +1,45 @@
-<package>
+<?xml version="1.0"?>
+<package format="2">
   <name>kobuki_core</name>
-  <version>0.7.12</version>
+  <version>1.4.0</version>
   <description>
-    Non-ROS software for Kobuki, Yujin Robot's mobile research base.
+    Pure C++ driver library for Kobuki.
   </description>
-  <author email="stonier@yujinrobot.com">Daniel Stonier</author>
-  <author email="yhju@yujinrobot.com">Younghun Ju</author>
-  <author email="jorge@yujinrobot.com">Jorge Santos Simon</author>
-  <author email="marcus.liebhardt@yujinrobot.com">Marcus Liebhardt</author>
-  <maintainer email="stonier@yujinrobot.com">Daniel Stonier</maintainer>
+  <author>Daniel Stonier</author>
+  <author>Younghun Ju</author>
+  <author>Jorge Santos Simon</author>
+  <maintainer email="d.stonier@gmail.com">Daniel Stonier</maintainer>
   <license>BSD</license>
-  <url type="bugtracker">https://github.com/yujinrobot/kobuki_core/issues</url>
-  <url type="repository">https://github.com/yujinrobot/kobuki_core</url>
-  <url type="website">http://ros.org/wiki/kobuki_core</url>
+  <url type="bugtracker">https://github.com/kobuki-base/kobuki_core/issues</url>
+  <url type="repository">https://github.com/kobuki-base/kobuki_core</url>
+  <url type="website">https://kobuki.readthedocs.io/en/release-1.0.x/</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
-  <run_depend>kobuki_dock_drive</run_depend> 
-  <run_depend>kobuki_driver</run_depend>
-  <run_depend>kobuki_ftdi</run_depend>
+  <build_depend>ecl_build</build_depend>
+  <build_depend>ecl_command_line</build_depend>
+  <build_depend>ecl_config</build_depend>
+  <build_depend>ecl_console</build_depend>
+  <build_depend>ecl_converters</build_depend>
+  <build_depend>ecl_devices</build_depend>
+  <build_depend>ecl_geometry</build_depend>
+  <build_depend>ecl_mobile_robot</build_depend>
+  <build_depend>ecl_sigslots</build_depend>
+  <build_depend>ecl_threads</build_depend>
+  <build_depend>ecl_time</build_depend>
+
+  <exec_depend>ecl_command_line</exec_depend>
+  <exec_depend>ecl_config</exec_depend>
+  <exec_depend>ecl_console</exec_depend>
+  <exec_depend>ecl_converters</exec_depend>
+  <exec_depend>ecl_devices</exec_depend>
+  <exec_depend>ecl_geometry</exec_depend>
+  <exec_depend>ecl_mobile_robot</exec_depend>
+  <exec_depend>ecl_sigslots</exec_depend>
+  <exec_depend>ecl_threads</exec_depend>
+  <exec_depend>ecl_time</exec_depend>
 
   <export>
-    <metapackage/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
