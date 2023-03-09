@@ -8,8 +8,9 @@ Some reference:
 
 Why we need this? 
 
-1. kobuki is produced at 2015 which is really far away, this repo will only provide the thing you can run the kobuki robot [maunal control using keyboard or remote control].
-2. This is for us to collected our own dataset **mainly indoor**, or tested our algorithm in a **real robot**. 
+1. kobuki is produced in 2015 which is really far away, this repo will only provide the thing you can run the kobuki robot [maunal control using the keyboard or remote control].
+2. This is for us to collect our own dataset **mainly indoor**, or tested our algorithm in a **real robot**. 
+3. IF YOU DIRECTLY USE THE KOBUKI FROM KIN, there is no need to set up following this one. This one is for somebody who wants to reinstall it totally and setup by themselves.
 
 Test System: Ubuntu 20.04 noetic
 
@@ -40,15 +41,37 @@ reference: https://github.com/yujinrobot/kobuki/issues/427, https://github.com/y
 sudo apt update && sudo apt-get install liborocos-kdl-dev libusb-dev libftdi-dev ros-noetic-joy ros-noetic-ecl-core ros-noetic-ecl-console ros-noetic-ecl-mobile-robot -y
 ```
 
+clone this repo:
 ```bash
+mkdir -p ~/kobuki_ws/src && cd ~/kobuki_ws/src
 git clone TODO_public_link # this repo
 ```
 
+build, if you want to setup sensor also, please follow [Sensor setup](#Sensor-setup)
+```bash
+cd ~/kobuki_ws
+catkin build
+```
 
 
 1. `kobuki.cpp` for the serial read thing.
 2. `subscriber_callbacks.cpp` topic will send to kobuki
 
+
+## Sensor setup
+
+Every sensor have their own driver, we need install them first, here we give two examples on how to setup livox and VLP-16. But maybe the NUC in the kobuki already have it if you are not from the scratch and reinstall everything.
+
+Dependencies are velodyne need:
+
+```bash
+sudo apt update && apt install -y libpcap-dev
+cd ~/kobuki_ws/src && mkdir driver && cd driver
+git clone https://github.com/ros-drivers/velodyne.git
+git clone https://github.com/Livox-SDK/livox_ros_driver.git
+cd ~/kobuki_ws
+catkin build
+```
 
 ## Run
 
@@ -82,6 +105,9 @@ git clone TODO_public_link # this repo
    ```
 
 
+## Demo of Running and sensor
+
+TODO put some pics and videos here
 
 
 
