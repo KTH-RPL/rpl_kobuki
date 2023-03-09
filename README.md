@@ -16,7 +16,7 @@ Test System: Ubuntu 20.04 noetic
 
 Test Day: 2023/03/09 17:53
 
-Author: Kin ZHANG (https://kin-zhang.github.io/)
+Author: Kin ZHANG [https://kin-zhang.github.io/](https://kin-zhang.github.io/)
 
 ---
 
@@ -72,6 +72,8 @@ git clone https://github.com/Livox-SDK/livox_ros_driver.git
 cd ~/kobuki_ws
 catkin build
 ```
+
+Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/Getting%20Started%20with%20the%20Velodyne%20VLP16)
 
 ## Run
 
