@@ -43,11 +43,12 @@ struct TeleopTwistJoy::Impl
 {
   void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
   void sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_msg, const std::string& which_map);
+  void sendCmdZeroMsg();
 
   ros::Subscriber joy_sub;
   ros::Publisher cmd_vel_pub;
 
-  int start_button, enable_driving;
+  int start_button, enable_driving, stop_button;
   int enable_turbo_button;
 
   std::map<std::string, int> axis_linear_map;
@@ -70,10 +71,11 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
 {
   pimpl_ = new Impl;
 
-  pimpl_->cmd_vel_pub = nh->advertise<geometry_msgs::Twist>("cmd_vel", 1, true);
+  pimpl_->cmd_vel_pub = nh->advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1, true);
   pimpl_->joy_sub = nh->subscribe<sensor_msgs::Joy>("joy", 1, &TeleopTwistJoy::Impl::joyCallback, pimpl_);
 
   nh_param->param<int>("start_button", pimpl_->start_button, 0);
+  nh_param->param<int>("stop_button", pimpl_->stop_button, 1);
   nh_param->param<int>("enable_driving", pimpl_->enable_driving, 2);
   nh_param->param<int>("enable_turbo_button", pimpl_->enable_turbo_button, -1);
   nh_param->getParam("debug_print", pimpl_->debug_print);
@@ -149,11 +151,11 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
   // Initializes with zeros by default.
   geometry_msgs::Twist cmd_vel_msg;
 
+  // sth, we don't need to use. Comment hard here.
   cmd_vel_msg.linear.x = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "x");
   // cmd_vel_msg.linear.y = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "y");
   // cmd_vel_msg.linear.z = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "z");
   cmd_vel_msg.angular.z = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "yaw");
-  // we don't need to use
   // cmd_vel_msg.angular.y = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "pitch");
   // cmd_vel_msg.angular.x = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "roll");
 
@@ -161,14 +163,35 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
   sent_disable_msg = false;
 }
 
+void TeleopTwistJoy::Impl::sendCmdZeroMsg()
+{
+  // Initializes with zeros by default.
+  geometry_msgs::Twist cmd_vel_msg;
+
+  cmd_vel_msg.linear.x = 0;
+  cmd_vel_msg.linear.y = 0;
+  cmd_vel_msg.linear.z = 0;
+  cmd_vel_msg.angular.z = 0;
+  cmd_vel_msg.angular.y = 0;
+  cmd_vel_msg.angular.x = 0;
+
+  cmd_vel_pub.publish(cmd_vel_msg);
+}
+
 void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg)
 {
-  if(joy_msg->buttons[start_button]){
+  if(joy_msg->buttons[start_button] && !initial_start){
     initial_start = true;
-    LOG_EVERY_N(INFO, 100) << "starting success, you have the controll to robot now.";
+    LOG(INFO) << "Starting success, you have the controll to robot now.";
+    sendCmdZeroMsg();
+  }
+  else if(joy_msg->buttons[stop_button]){
+    initial_start = false;
+    LOG_EVERY_N(INFO, 100) << "Stop the robot";
+    sendCmdZeroMsg();
   }
   if(!initial_start && debug_print){
-    LOG_EVERY_N(INFO, 100) << "waiting for open.... , press start button";
+    LOG_EVERY_N(INFO, 100) << "Waiting for open.... , press 'start' button";
     return;
   }
   // LOG(INFO) << joy_msg->buttons.size() << "enable button" << joy_msg->buttons[start_button];
@@ -177,7 +200,7 @@ void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg
     sendCmdVelMsg(joy_msg, "turbo");
   }
   else if (joy_msg->buttons.size() > start_button &&
-           abs(joy_msg->axes[enable_driving])>0 && joy_msg->axes[enable_driving]<-0.5)
+           joy_msg->buttons[enable_driving])
   {
     sendCmdVelMsg(joy_msg, "normal");
   }

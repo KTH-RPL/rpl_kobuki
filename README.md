@@ -131,6 +131,14 @@ Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/G
    lrwxrwxrwx  1 root   root             9 mar 10 10:31 logitech_joy -> input/js0
    ```
 
+5. Control Manual
+   Here is the button said
+   - START : to start the robot, if you want to STOP
+   - STOP : to stop robot
+   - MODE : PLEASE TURN OFF THE MODE
+   - RB && RIGHT mini sticks: forward speed
+   - RB && LEFT mini sticks: left/right turn
+   
    
 ## Demo of Running and sensor
 

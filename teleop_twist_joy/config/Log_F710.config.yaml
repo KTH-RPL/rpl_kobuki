@@ -1,15 +1,26 @@
-# Logitech F710
+# Logitech F710 ====> setup
+# left hand more safe, need your two hand to control the car move forward
 axis_linear:
-  x: 1
+  x: 1 # button_position
 scale_linear:
-  x: 0.7
+  x: 1.5
 axis_angular:
-  yaw: 3
+  yaw: 3 # button_position
 scale_angular:
-  yaw: 0.7
+  yaw: 1.5
+
+# right hand
+# axis_linear:
+#   x: 4 # button_position
+# scale_linear:
+#   x: 1.5
+# axis_angular:
+#   yaw: 0 # button_position
+# scale_angular:
+#   yaw: 1.5
 
 start_button: 7  # Trigger start
-enable_driving: 5 # must continuing press this button to pub vel
-enable_turbo_button: -1  # Button 2 aka thumb button
+stop_button: 6
 
+enable_driving: 5 # must continuing press this button to pub vel
 debug_print: true
