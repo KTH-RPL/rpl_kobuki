@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(teleop_twist_joy)
 
-find_package(catkin REQUIRED COMPONENTS geometry_msgs roscpp sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS geometry_msgs roscpp sensor_msgs kobuki_msgs)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS geometry_msgs roscpp sensor_msgs
+  CATKIN_DEPENDS geometry_msgs roscpp sensor_msgs kobuki_msgs
 )
 find_package(Glog REQUIRED)
 find_package(gflags REQUIRED)

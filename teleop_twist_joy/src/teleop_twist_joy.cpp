@@ -30,6 +30,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <map>
 #include <string>
 #include <glog/logging.h>
+#include <kobuki_msgs/SensorState.h>
 
 namespace teleop_twist_joy
 {
@@ -44,8 +45,9 @@ struct TeleopTwistJoy::Impl
   void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
   void sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_msg, const std::string& which_map);
   void sendCmdZeroMsg();
+  void bumperCallback(const kobuki_msgs::SensorState::ConstPtr& msg);
 
-  ros::Subscriber joy_sub;
+  ros::Subscriber joy_sub, bumper_sub;
   ros::Publisher cmd_vel_pub;
 
   int start_button, enable_driving, stop_button;
@@ -73,6 +75,7 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
 
   pimpl_->cmd_vel_pub = nh->advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1, true);
   pimpl_->joy_sub = nh->subscribe<sensor_msgs::Joy>("joy", 1, &TeleopTwistJoy::Impl::joyCallback, pimpl_);
+  pimpl_->bumper_sub = nh->subscribe<kobuki_msgs::SensorState>("/mobile_base/sensors/core", 10, &TeleopTwistJoy::Impl::bumperCallback, pimpl_);
 
   nh_param->param<int>("start_button", pimpl_->start_button, 0);
   nh_param->param<int>("stop_button", pimpl_->stop_button, 1);
@@ -143,6 +146,16 @@ double getVal(const sensor_msgs::Joy::ConstPtr& joy_msg, const std::map<std::str
   }
 
   return joy_msg->axes[axis_map.at(fieldname)] * scale_map.at(fieldname);
+}
+
+void TeleopTwistJoy::Impl::bumperCallback(const kobuki_msgs::SensorState::ConstPtr& msg){
+    if(msg->bumper & kobuki_msgs::SensorState::BUMPER_LEFT ||
+       msg->bumper & kobuki_msgs::SensorState::BUMPER_RIGHT ||
+       msg->bumper & kobuki_msgs::SensorState::BUMPER_CENTRE){
+        // sendCmdZeroMsg();
+        LOG(WARNING) << "collide with sth";
+        // TODO set zero and only allowed back action.
+    }
 }
 
 void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_msg,
