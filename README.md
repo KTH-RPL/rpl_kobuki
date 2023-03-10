@@ -106,6 +106,9 @@ Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/G
    q : quit.
    ```
 
+4. Remote controller [Logitech F710 setup]
+
+   
 
 ## Demo of Running and sensor
 
