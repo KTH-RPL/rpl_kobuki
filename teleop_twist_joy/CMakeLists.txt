@@ -8,14 +8,20 @@ catkin_package(
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS geometry_msgs roscpp sensor_msgs
 )
+find_package(Glog REQUIRED)
+find_package(gflags REQUIRED)
 
+set(LOG_LIB
+    glog::glog
+    gflags
+)
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} src/${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 add_executable(${PROJECT_NAME}_node src/teleop_node.cpp)
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${catkin_LIBRARIES} ${LOG_LIB})
 set_target_properties(${PROJECT_NAME}_node
   PROPERTIES OUTPUT_NAME teleop_node PREFIX "")
 

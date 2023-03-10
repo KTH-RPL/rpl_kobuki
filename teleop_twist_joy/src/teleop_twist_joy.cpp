@@ -29,7 +29,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 #include <map>
 #include <string>
-
+#include <glog/logging.h>
 
 namespace teleop_twist_joy
 {
@@ -47,7 +47,7 @@ struct TeleopTwistJoy::Impl
   ros::Subscriber joy_sub;
   ros::Publisher cmd_vel_pub;
 
-  int enable_button;
+  int start_button, enable_driving;
   int enable_turbo_button;
 
   std::map<std::string, int> axis_linear_map;
@@ -57,6 +57,8 @@ struct TeleopTwistJoy::Impl
   std::map< std::string, std::map<std::string, double> > scale_angular_map;
 
   bool sent_disable_msg;
+  bool initial_start = false;
+  bool debug_print = false;
 };
 
 /**
@@ -71,8 +73,10 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
   pimpl_->cmd_vel_pub = nh->advertise<geometry_msgs::Twist>("cmd_vel", 1, true);
   pimpl_->joy_sub = nh->subscribe<sensor_msgs::Joy>("joy", 1, &TeleopTwistJoy::Impl::joyCallback, pimpl_);
 
-  nh_param->param<int>("enable_button", pimpl_->enable_button, 0);
+  nh_param->param<int>("start_button", pimpl_->start_button, 0);
+  nh_param->param<int>("enable_driving", pimpl_->enable_driving, 2);
   nh_param->param<int>("enable_turbo_button", pimpl_->enable_turbo_button, -1);
+  nh_param->getParam("debug_print", pimpl_->debug_print);
 
   if (nh_param->getParam("axis_linear", pimpl_->axis_linear_map))
   {
@@ -99,7 +103,7 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
         pimpl_->scale_angular_map["turbo"]["yaw"], pimpl_->scale_angular_map["normal"]["yaw"]);
   }
 
-  ROS_INFO_NAMED("TeleopTwistJoy", "Teleop enable button %i.", pimpl_->enable_button);
+  ROS_INFO_NAMED("TeleopTwistJoy", "Teleop enable button %i.", pimpl_->start_button);
   ROS_INFO_COND_NAMED(pimpl_->enable_turbo_button >= 0, "TeleopTwistJoy",
       "Turbo on button %i.", pimpl_->enable_turbo_button);
 
@@ -156,14 +160,19 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
 
 void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg)
 {
-  if (enable_turbo_button >= 0 &&
-      joy_msg->buttons.size() > enable_turbo_button &&
-      joy_msg->buttons[enable_turbo_button])
+  if(joy_msg->buttons[start_button])
+    initial_start = true;
+  if(!initial_start && debug_print){
+    // LOG(INFO) << "waiting for open, press ";
+    return;
+  }
+  // LOG(INFO) << joy_msg->buttons.size() << "enable button" << joy_msg->buttons[start_button];
+  if (enable_turbo_button >= 0 && joy_msg->buttons.size() > enable_turbo_button)
   {
     sendCmdVelMsg(joy_msg, "turbo");
   }
-  else if (joy_msg->buttons.size() > enable_button &&
-           joy_msg->buttons[enable_button])
+  else if (joy_msg->buttons.size() > start_button &&
+           abs(joy_msg->axes[enable_driving])>0 && joy_msg->axes[enable_driving]<-0.5)
   {
     sendCmdVelMsg(joy_msg, "normal");
   }
