@@ -108,8 +108,30 @@ Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/G
 
 4. Remote controller [Logitech F710 setup]
 
-   
+   ```bash
+   # check the lsusb
+   turtle@turtle-nuc /home » lsusb     
+   Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+   Bus 001 Device 006: ID 046d:c21f Logitech, Inc. F710 Wireless Gamepad [XInput Mode] # <=== joy
+   Bus 001 Device 007: ID 0403:6001 Future Technology Devices International, Ltd FT232 Serial (UART) IC # <=== serial
+   ```
+   Most of time is in the `/dev/input` as `js0`, we can edit with:
+   ```bash
+   sudo vim /etc/udev/rules.d/10-colca.rules
+   KERNEL=="js*", SUBSYSTEM=="input", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c21f", MODE:="0777",SYMLINK+="logitech_joy"
+   KERNEL=="ttyUSB*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE:="0777",SYMLINK+="kobuki_serial"
+   service udev reload
+   service udev restart
+   # important step!! plugin out and in again!
+   ```
+   And we will see things by running following command, so that even more device is here, we will not lose them.
+   ```bash
+   turtle@turtle-nuc /home » ls -l /dev | grep -E "logitech|kob"
+   lrwxrwxrwx  1 root   root             7 mar 10 10:37 kobuki_serial -> ttyUSB0
+   lrwxrwxrwx  1 root   root             9 mar 10 10:31 logitech_joy -> input/js0
+   ```
 
+   
 ## Demo of Running and sensor
 
 TODO put some pics and videos here

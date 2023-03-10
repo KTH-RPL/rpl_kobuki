@@ -2,7 +2,7 @@
 # Firmware Source
 ##############################################################################
 
-device_port: /dev/ttyUSB0
+device_port: /dev/kobuki_serial
 
 # published joint states
 wheel_left_joint_name: wheel_left_joint
