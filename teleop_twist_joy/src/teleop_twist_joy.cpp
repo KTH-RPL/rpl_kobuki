@@ -82,6 +82,7 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
   {
     nh_param->getParam("scale_linear", pimpl_->scale_linear_map["normal"]);
     nh_param->getParam("scale_linear_turbo", pimpl_->scale_linear_map["turbo"]);
+    LOG(INFO) << "get axis linear";
   }
   else
   {
@@ -94,6 +95,7 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
   {
     nh_param->getParam("scale_angular", pimpl_->scale_angular_map["normal"]);
     nh_param->getParam("scale_angular_turbo", pimpl_->scale_angular_map["turbo"]);
+    LOG(INFO) << "get axis angular";
   }
   else
   {
@@ -148,11 +150,12 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
   geometry_msgs::Twist cmd_vel_msg;
 
   cmd_vel_msg.linear.x = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "x");
-  cmd_vel_msg.linear.y = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "y");
-  cmd_vel_msg.linear.z = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "z");
+  // cmd_vel_msg.linear.y = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "y");
+  // cmd_vel_msg.linear.z = getVal(joy_msg, axis_linear_map, scale_linear_map[which_map], "z");
   cmd_vel_msg.angular.z = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "yaw");
-  cmd_vel_msg.angular.y = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "pitch");
-  cmd_vel_msg.angular.x = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "roll");
+  // we don't need to use
+  // cmd_vel_msg.angular.y = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "pitch");
+  // cmd_vel_msg.angular.x = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "roll");
 
   cmd_vel_pub.publish(cmd_vel_msg);
   sent_disable_msg = false;
@@ -160,10 +163,12 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
 
 void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg)
 {
-  if(joy_msg->buttons[start_button])
+  if(joy_msg->buttons[start_button]){
     initial_start = true;
+    LOG_EVERY_N(INFO, 100) << "starting success, you have the controll to robot now.";
+  }
   if(!initial_start && debug_print){
-    // LOG(INFO) << "waiting for open, press ";
+    LOG_EVERY_N(INFO, 100) << "waiting for open.... , press start button";
     return;
   }
   // LOG(INFO) << joy_msg->buttons.size() << "enable button" << joy_msg->buttons[start_button];
