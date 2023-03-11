@@ -59,9 +59,9 @@ struct TeleopTwistJoy::Impl
   std::map<std::string, int> axis_angular_map;
   std::map< std::string, std::map<std::string, double> > scale_angular_map;
 
-  bool sent_disable_msg;
   bool initial_start = false;
   bool debug_print = false;
+  bool bumper_collide = false;
 };
 
 /**
@@ -131,8 +131,6 @@ TeleopTwistJoy::TeleopTwistJoy(ros::NodeHandle* nh, ros::NodeHandle* nh_param)
     ROS_INFO_COND_NAMED(pimpl_->enable_turbo_button >= 0, "TeleopTwistJoy",
         "Turbo for angular axis %s is scale %f.", it->first.c_str(), pimpl_->scale_angular_map["turbo"][it->first]);
   }
-
-  pimpl_->sent_disable_msg = false;
 }
 
 double getVal(const sensor_msgs::Joy::ConstPtr& joy_msg, const std::map<std::string, int>& axis_map,
@@ -152,9 +150,11 @@ void TeleopTwistJoy::Impl::bumperCallback(const kobuki_msgs::SensorState::ConstP
     if(msg->bumper & kobuki_msgs::SensorState::BUMPER_LEFT ||
        msg->bumper & kobuki_msgs::SensorState::BUMPER_RIGHT ||
        msg->bumper & kobuki_msgs::SensorState::BUMPER_CENTRE){
-        // sendCmdZeroMsg();
-        LOG(WARNING) << "collide with sth";
-        // TODO set zero and only allowed back action.
+        LOG_EVERY_N(WARNING, 100) << "collide with sth, disable forward speed now";
+        bumper_collide = true;
+    }
+    else{
+      bumper_collide = false;
     }
 }
 
@@ -172,22 +172,17 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
   // cmd_vel_msg.angular.y = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "pitch");
   // cmd_vel_msg.angular.x = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "roll");
 
+  // enable_only_back_speed
+  if(bumper_collide && cmd_vel_msg.linear.x < 0){
+    cmd_vel_pub.publish(cmd_vel_msg);  
+    return;
+  }
   cmd_vel_pub.publish(cmd_vel_msg);
-  sent_disable_msg = false;
 }
 
-void TeleopTwistJoy::Impl::sendCmdZeroMsg()
-{
+void TeleopTwistJoy::Impl::sendCmdZeroMsg(){
   // Initializes with zeros by default.
   geometry_msgs::Twist cmd_vel_msg;
-
-  cmd_vel_msg.linear.x = 0;
-  cmd_vel_msg.linear.y = 0;
-  cmd_vel_msg.linear.z = 0;
-  cmd_vel_msg.angular.z = 0;
-  cmd_vel_msg.angular.y = 0;
-  cmd_vel_msg.angular.x = 0;
-
   cmd_vel_pub.publish(cmd_vel_msg);
 }
 
@@ -216,18 +211,6 @@ void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg
            joy_msg->buttons[enable_driving])
   {
     sendCmdVelMsg(joy_msg, "normal");
-  }
-  else
-  {
-    // When enable button is released, immediately send a single no-motion command
-    // in order to stop the robot.
-    if (!sent_disable_msg)
-    {
-      // Initializes with zeros by default.
-      geometry_msgs::Twist cmd_vel_msg;
-      cmd_vel_pub.publish(cmd_vel_msg);
-      sent_disable_msg = true;
-    }
   }
 }
 
