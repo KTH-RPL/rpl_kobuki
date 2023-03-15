@@ -142,6 +142,34 @@ Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/G
    
 ## Demo of Running and sensor
 
+script to do so, check the [sh script file](assets/run_kobuki.sh)
+
+```bash
+chmod +x run_kobuki.sh
+./run_kobuki.sh
+```
+
+### Optiona 2: Run it one by one:
+1. Open Joy:
+   ```bash
+   roslaunch teleop_twist_joy teleop.launch
+   ```
+
+2. Open kobuki:
+   ```bash
+   roslaunch kobuki_node minimal.launch
+   ```
+
+3. Open Livox:
+   ```bash
+   roslaunch livox_ros_driver livox_kobuki.launch
+   ```
+
+4. Open Velodyne:
+   ```bash
+   TODO
+   ```
+
 TODO put some pics and videos here
 
 
