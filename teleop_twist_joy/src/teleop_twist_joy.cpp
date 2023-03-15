@@ -212,6 +212,8 @@ void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg
   {
     sendCmdVelMsg(joy_msg, "normal");
   }
+  else
+    sendCmdZeroMsg();
 }
 
 }  // namespace teleop_twist_joy
