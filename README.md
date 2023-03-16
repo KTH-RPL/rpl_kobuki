@@ -3,6 +3,7 @@ KTH-RPL kobuki robot
 
 Some reference:
 
+- kobuki docs including the kobuki self not ROS/drawing: [https://iclebo-kobuki.readthedocs.io/en/latest/basic_usage.html](https://iclebo-kobuki.readthedocs.io/en/latest/basic_usage.html)
 - Manual book for turtlebot2 kobuki: https://learn.turtlebot.com/2015/02/01/1/  [But most of them are redundant]
 - Official repo: [https://github.com/yujinrobot/kobuki.git](https://github.com/yujinrobot/kobuki.git)
 
@@ -31,7 +32,7 @@ Will add more... like camera (rgb/depth).
 
 Picture of it:
 
-TODO (since Patric and I are rebuilding this power setting)
+![](assets/img/kobuki_sensor_setup.png)
 
 ## Dependencies & Build
 
@@ -73,7 +74,34 @@ cd ~/kobuki_ws
 catkin build
 ```
 
-Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/Getting%20Started%20with%20the%20Velodyne%20VLP16)
+Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/Getting%20Started%20with%20the%20Velodyne%20VLP16), using the wireshark to 
+
+```bash
+sudo apt update && sudo add-apt-repository ppa:wireshark-dev/stable
+sudo apt install wireshark
+```
+
+Open it with sudo
+
+```bash
+sudo wireshark
+```
+
+You can check the ip addr if you forget here, and also **<u>which ip the sensor looking for</u>**.
+
+
+
+Livox SDK:
+
+```bash
+git clone https://github.com/Livox-SDK/Livox-SDK
+cd Livox-SDK
+cd build && cmake ..
+make
+sudo make install
+```
+
+
 
 ## Run
 
@@ -131,20 +159,29 @@ Reference: [ros_wiki_get_started_VLP16](http://wiki.ros.org/velodyne/Tutorials/G
    lrwxrwxrwx  1 root   root             9 mar 10 10:31 logitech_joy -> input/js0
    ```
 
-5. Control Manual
-   Here is the button said
-   - START : to start the robot, if you want to STOP
-   - STOP : to stop robot
-   - MODE : PLEASE TURN OFF THE MODE
+5. Control Manual, Here is the button said
+   
+   - START : to start the robot, if you want to STOP, press `BACK`
+   - BACK : to stop robot
+   - MODE : PLEASE **<u>TURN OFF</u>** THE MODE
    - RB && RIGHT mini sticks: forward speed
    - RB && LEFT mini sticks: left/right turn
    
    
 ## Demo of Running and sensor
 
-TODO put some pics and videos here
+### SLAM
 
+Do some slam thing, this simple package you can try [simple_ndt_slam](https://github.com/Kin-Zhang/simple_ndt_slam). This one is in TR14 6 floor:
+https://user-images.githubusercontent.com/35365764/225727506-d20d1cfa-a122-4ce5-be35-5b233c275672.mp4
 
+### Perception
+
+TODO
+
+### DUFOMap
+
+TODO
 
 # Issues 
 
