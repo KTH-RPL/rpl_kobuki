@@ -160,14 +160,14 @@ chmod +x run_kobuki.sh
    roslaunch kobuki_node minimal.launch
    ```
 
-3. Open Livox:
+3. Open Livox [If you setup from the start, please correct the ip addr in Network setting]:
    ```bash
    roslaunch livox_ros_driver livox_kobuki.launch
    ```
 
-4. Open Velodyne:
+4. Open Velodyne [If you setup from the start, please correct the ip addr in Network setting]:
    ```bash
-   TODO
+   roslaunch velodyne_pointcloud VLP16_points.launch
    ```
 
 TODO put some pics and videos here
