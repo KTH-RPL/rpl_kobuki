@@ -3,11 +3,11 @@
 axis_linear:
   x: 1 # button_position
 scale_linear:
-  x: 1.5
+  x: 1.0
 axis_angular:
   yaw: 3 # button_position
 scale_angular:
-  yaw: 1.5
+  yaw: 1.0
 
 # right hand
 # axis_linear:

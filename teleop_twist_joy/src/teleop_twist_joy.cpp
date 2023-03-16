@@ -173,8 +173,8 @@ void TeleopTwistJoy::Impl::sendCmdVelMsg(const sensor_msgs::Joy::ConstPtr& joy_m
   // cmd_vel_msg.angular.x = getVal(joy_msg, axis_angular_map, scale_angular_map[which_map], "roll");
 
   // enable_only_back_speed
-  if(bumper_collide && cmd_vel_msg.linear.x < 0){
-    cmd_vel_pub.publish(cmd_vel_msg);  
+  if(bumper_collide && cmd_vel_msg.linear.x > 0){
+    sendCmdZeroMsg();
     return;
   }
   cmd_vel_pub.publish(cmd_vel_msg);
@@ -212,6 +212,8 @@ void TeleopTwistJoy::Impl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy_msg
   {
     sendCmdVelMsg(joy_msg, "normal");
   }
+  else
+    sendCmdZeroMsg();
 }
 
 }  // namespace teleop_twist_joy
